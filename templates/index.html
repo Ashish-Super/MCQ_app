@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Class 11 MCQ App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .score {
+            background: #eef;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .wrong-block {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+
+        .your-answer {
+            color: #b00020;
+            font-weight: bold;
+        }
+
+        .correct-answer {
+            color: #007f00;
+            font-weight: bold;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            /* white-space: pre-line; */
+        }
+
+        .correct {
+            color: green;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .explanation-box {
+            background: #f4f8ff;
+            padding: 14px;
+            margin-top: 12px;
+            border-left: 4px solid #3366cc;
+
+            max-width: 100%;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .explanation-box p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        .exp-title {
+            font-weight: bold;
+            color: #1a3d8f;
+            margin-top: 10px;
+        }
+
+        .explanation-box b {
+            color: #333;
+        }
+
+        .button1,
+        .button2 {
+            border: 0;
+            padding: .6rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: .95rem;
+            background: #e5e7eb;
+            color: #111;
+        }
+
+        .sub-box,
+        .class-box {
+            width: 12%;
+            padding: .5rem .6rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .head {
+            background: #ffffff;
+            padding: 1.25rem 1rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .08);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .header-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+
+        .muted {
+            color: #6b7280;
+            font-size: .85rem;
+        }
+
+        .body {
+            background-color: #f6f7fb;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #ddd;
+            border-top: 4px solid #3366cc;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #leaderboardScreen {
+            font-family: Arial, sans-serif;
+        }
+
+        #leaderboardContent {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .leader-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border-top: 6px solid #3366cc;
+        }
+
+        .leader-rank {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3366cc;
+        }
+
+        .leader-class {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 6px;
+        }
+
+        .leader-average {
+            margin-top: 4px;
+            color: #444;
+        }
+
+        .leader-top-title {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .student-row {
+            display: flex;
+            justify-content: space-between;
+            background: #f4f8ff;
+            padding: 6px 8px;
+            border-radius: 6px;
+            margin-top: 6px;
+        }
+
+        .student-score {
+            font-weight: bold;
+            color: #007f00;
+        }
+    </style>
+</head>
+</head>
+
+<body class="body">
+    
+    <header class="head">
+        <div id="leaderboardScreen" style="
+       display:none;
+       position:fixed;
+       top:0; left:0;
+       width:100%; height:100%;
+       background:white;
+       overflow:auto;
+       z-index:1000;
+    ">
+            <h1 style="margin-top: 70px;">Leaderboard</h1>
+            <button onclick="closeLeaderboard()" class="button2">Close</button>
+            <div id="leaderboardContent"></div>
+        </div>
+        <h1 style="margin: 0px;">Class 9, 10, 11 & 12 MCQ's Generator</h1>
+        <p class="muted">Test your knowleage with MCQ's. Choose <b>Class</b> and <b>Subject</b> to get started !!!</p>
+        <button onclick="viewLeaderboard()" class="button2">View Leaderboard</button>
+        <!-- <p class="muted" style="text-align: right;">Created by: Ashish Ranjan</p> -->
+    </header>
+
+    <label>Class:</label>
+    <select id="classSelect" class="class-box">
+        <option value="">Select Class</option>
+        <option value="11">Class 11</option>
+        <option value="10">Class 10</option>
+        <option value="9">Class 9</option>
+        <option value="12">Class 12</option>
+    </select>
+
+    <label>Subject:</label>
+    <select id="subject" class="sub-box">
+        <option value="">Select Subject</option>
+        <option value="Science" data-level="junior">Science</option>
+        <option value="Social Science" data-level="junior">Social Science</option>
+        <option value="English Grammer" data-level="all">English (Grammer)</option>
+        <option value="Physics" data-level="senior">Physics</option>
+        <option value="Chemistry" data-level="senior">Chemistry</option>
+        <!-- <option value="Mathematics" data-level="all">Mathematics</option> -->
+        <option value="Biology" data-level="senior">Biology</option>
+        <option value="Economics" data-level="senior">Economics</option>
+        <option value="Accountancy" data-level="senior">Accountancy</option>
+        <option value="Business Studies" data-level="senior">Business Studies</option>
+        <option value="Computer Science with python" data-level="senior">Computer Science (CS)</option>
+        <option value="Information Technology" data-level="junior">Information Technology (IT)</option>
+        <option value="Hindi Grammer" data-level="junior">Hindi (Grammer)</option>
+        <option value="Tamil Grammer" data-level="junior">Tamil (Grammer)</option>
+    </select>
+
+    <label>Difficultiy</label>
+    <select id="difficultiy_level" class="class-box">
+        <option value="">Select Difficultiy</option>
+        <option value="Easy">Easy</option>
+        <option value="Medium">Medium</option>
+        <option value="Hard">Hard</option>
+    </select>
+
+    <label>Your Name:</label>
+    <input id="studentName" class="class-box" placeholder="Enter name">
+
+    <button onclick="generateQuestions()" class="button1">Generate Questions</button>
+
+    <form id="quizForm"></form>
+
+    <button type="button" id="submitBtn" onclick="submitAnswers()" class="button2">Submit Answers</button>
+
+    <div id="loader" style="display:none; text-align:center; margin:20px;">
+        <div class="spinner"></div>
+        <p>Loading, please wait...</p>
+    </div>
+
+    <hr>
+
+    <div id="result"></div>
+    <script>
+
+        function generateQuestions() {
+            console.log("Generate clicked")
+
+            // HARD RESET UI STATE
+            submissionLocked = false
+            const btn = document.getElementById("submitBtn")
+            btn.disabled = false
+
+            // ✅ RESET OLD STATE (FIX PART 1)
+            questionsData = []
+            document.getElementById("quizForm").innerHTML = ""
+            document.getElementById("result").innerHTML = ""
+            document.getElementById("loader").style.display = "block"
+
+            const subject = document.getElementById("subject").value
+            const classLevel = document.getElementById("classSelect").value
+            const difficultiy_level = document.getElementById("difficultiy_level").value
+
+            fetch("/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    subject: subject,
+                    class_level: classLevel,
+                    count: 10
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Response from backend:", data)
+
+                    // ✅ SAFETY CHECK
+                    if (!data.questions || !Array.isArray(data.questions)) {
+                        alert("Failed to load questions. Try again.")
+                        return
+                    }
+
+                    questionsData = data.questions
+                    displayQuestions(data.questions)
+
+                    // FINAL RESET AFTER QUESTIONS LOAD
+                    submissionLocked = false
+                    btn.disabled = false
+                })
+                .catch(err => {
+                    console.error("Generate error:", err)
+                    alert("Server error. Check backend logs.")
+                })
+        }
+
+        function displayQuestions(questions) {
+            const form = document.getElementById("quizForm")
+            document.getElementById("loader").style.display = "none"
+
+            form.innerHTML = ""
+
+            questions.forEach(q => {
+                const div = document.createElement("div")
+                div.innerHTML = `<p><b>${q.id}. ${q.question}</b></p>`
+
+                for (let key in q.options) {
+                    div.innerHTML += `
+                <label>
+                    <input type="radio" name="${q.id}" value="${key}">
+                    ${key}. ${q.options[key]}
+                </label><br>
+            `
+                }
+
+                form.appendChild(div)
+                form.appendChild(document.createElement("hr"))
+            })
+        }
+
+        let submissionLocked = false
+
+        function submitAnswers() {
+            if (submissionLocked) return
+            submissionLocked = true
+
+            const btn = document.getElementById("submitBtn")
+            btn.disabled = true
+
+            document.getElementById("loader").style.display = "block"
+
+            const answers = {}
+
+            questionsData.forEach(q => {
+                const selected = document.querySelector(`input[name="${q.id}"]:checked`)
+                if (selected) {
+                    answers[q.id] = selected.value
+                }
+            })
+
+            // stop if no answers selected
+            if (Object.keys(answers).length === 0) {
+                alert("No answers selected")
+                submissionLocked = false
+                btn.disabled = false
+                return
+            }
+
+            fetch("/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    answers: answers,
+                    name: document.getElementById("studentName").value.trim(),
+                    classlevel: document.getElementById("classSelect").value
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    renderResult(data)
+                    document.getElementById("loader").style.display = "none"
+                })
+        }
+
+        function renderResult(data) {
+            const resultDiv = document.getElementById("result")
+            if (!resultDiv) {
+                console.error("Result container not found")
+                return
+            }
+            resultDiv.innerHTML = ""
+
+            const scoreBlock = document.createElement("div")
+            scoreBlock.className = "score"
+            scoreBlock.innerHTML = `<h3>Score: ${data.score} / ${data.out_of}</h3>`
+            resultDiv.appendChild(scoreBlock)
+
+            if (data.wrong_answers.length === 0) {
+                resultDiv.innerHTML += "<p class='correct'>All answers are correct 🎉</p>"
+                return
+            }
+
+            data.wrong_answers.forEach((item, index) => {
+                const block = document.createElement("div")
+                block.className = "wrong-block"
+
+                block.innerHTML = `
+            <h4>Question ${index + 1}</h4>
+            <p><b>${item.question}</b></p>
+
+            <p class="your-answer">Your Answer: ${item.your_answer}</p>
+            <p class="correct-answer">Correct Answer: ${item.correct_answer}</p>
+
+            ${formatExplanation(item.explanation)}
+        `
+                resultDiv.appendChild(block)
+            })
+            document.getElementById("loader").style.display = "none"
+        }
+        function formatExplanation(explanationText) {
+            let cleaned = explanationText
+                .replace(/```json/g, "")
+                .replace(/```/g, "")
+                .trim()
+
+            let html = ""
+
+            try {
+                const data = JSON.parse(cleaned)
+
+                html = `
+            <div class="explanation-box">
+                <p class="exp-title">Why your answer is wrong</p>
+                <p>${data.why_your_answer_is_wrong}</p>
+
+                <p class="exp-title">Why the correct answer is right</p>
+                <p>${data.why_correct_answer_is_right}</p>
+
+                <p class="exp-title">Key takeaway</p>
+                <p>${data.key_takeaway}</p>
+            </div>
+        `
+            } catch (e) {
+                html = `
+            <div class="explanation-box">
+                <p>${cleaned}</p>
+            </div>
+        `
+            }
+
+            return html
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const classSelect = document.getElementById("classSelect")
+            const subjectSelect = document.getElementById("subject")
+
+            classSelect.addEventListener("change", updateSubjects)
+
+            function updateSubjects() {
+                const classValue = classSelect.value
+                const options = subjectSelect.options
+
+                for (let i = 0; i < options.length; i++) {
+                    const level = options[i].getAttribute("data-level")
+                    if (!level) continue
+
+                    // Class 9–10 logic
+                    if (classValue === "9" || classValue === "10") {
+                        options[i].style.display =
+                            (level === "senior") ? "none" : "block"
+                    }
+
+                    // Class 11–12 logic
+                    else if (classValue === "11" || classValue === "12") {
+                        options[i].style.display =
+                            (level === "junior") ? "none" : "block"
+                    }
+
+                    // No class selected
+                    else {
+                        options[i].style.display = "block"
+                    }
+                }
+
+                // Reset subject if it becomes hidden
+                const selected = subjectSelect.selectedOptions[0]
+                if (selected && selected.style.display === "none") {
+                    subjectSelect.value = ""
+                }
+            }
+        })
+
+        function viewLeaderboard() {
+            fetch("/leaderboard")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("leaderboardScreen").style.display = "block"
+                    const box = document.getElementById("leaderboardContent")
+                    box.innerHTML = ""
+
+                    data.forEach((item, index) => {
+                        let studentsHTML = ""
+                        item.top_students.forEach((s, i) => {
+                            studentsHTML += `
+                    <div class="student-row">
+                       ${i + 1}. ${s.name} 
+                       <span class="student-score">${s.score}</span>
+                    </div>
+                  `
+                        })
+
+                        box.innerHTML += `
+                <div class="leader-card">
+                    <div class="leader-rank">Rank ${index + 1}</div>
+                    <div class="leader-class">Class ${item.class}</div>
+                    <div class="leader-average">Average Score ${item.average}</div>
+                    <div class="leader-top-title">Top Students</div>
+                    ${studentsHTML}
+                </div>
+              `
+                    })
+                })
+        }
+
+        function closeLeaderboard() {
+            document.getElementById("leaderboardScreen").style.display = "none"
+        }
+
+    </script>
+
+</body>
+
+</html>
